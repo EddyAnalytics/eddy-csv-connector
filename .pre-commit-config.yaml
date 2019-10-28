@@ -8,7 +8,6 @@ repos:
     -   id: check-ast
     -   id: fix-encoding-pragma
     -   id: mixed-line-ending
-    -   id: requirements-txt-fixer
 -   repo: https://github.com/psf/black
     rev: stable
     hooks:
