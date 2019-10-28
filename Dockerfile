@@ -16,7 +16,7 @@ RUN useradd --create-home app
 WORKDIR /home/app
 USER app
 
-COPY *.py ./
+COPY docker-entrypoint.sh *.py ./
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["eddy-csv-connector"]
