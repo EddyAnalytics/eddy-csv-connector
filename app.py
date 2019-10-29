@@ -42,7 +42,7 @@ def csv_to_kafka(url, topic):
     for chunk in request.iter_content(32768):
         if chunk:
             logging.debug("processing chunk")
-            lines = (leftover + chunk.decode("utf-8")).split("\n")
+            lines = (leftover + chunk.decode("utf-8")).splitlines()
             leftover = lines[-1]
 
             logging.debug("sending lines to kafka")
