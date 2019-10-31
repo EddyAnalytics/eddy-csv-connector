@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import codecs
+import csv
 import logging
 from concurrent import futures
+from urllib.request import urlopen
 
-import requests
 from celery import Celery
 from confluent_kafka import Producer
 from confluent_kafka.admin import AdminClient
@@ -35,25 +37,20 @@ def csv_to_kafka(url, topic):
     logging.info("deletion completed")
 
     logging.info("getting csv from url")
-    request = requests.get(url, stream=True)
+
+    response = urlopen(url)
+    csv_reader = csv.reader(codecs.iterdecode(response, "utf-8"))
 
     logging.info("entering main loop")
     leftover = ""
-    for chunk in request.iter_content(32768):
-        if chunk:
-            logging.debug("processing chunk")
-            lines = (leftover + chunk.decode("utf-8")).splitlines()
-            leftover = lines[-1]
-
-            logging.debug("sending lines to kafka")
-            for line in lines:
-                logging.debug("send line to kafka")
-                try:
-                    producer.produce(topic, line.encode("utf-8"))
-                except BufferError:
-                    logging.info("BufferError, flushing...")
-                    producer.flush()
-                    producer.produce(topic, line.encode("utf-8"))
+    for line in csv_reader:
+        logging.debug("send line to kafka")
+        try:
+            producer.produce(topic, line.encode("utf-8"))
+        except BufferError:
+            logging.info("BufferError, flushing...")
+            producer.flush()
+            producer.produce(topic, line.encode("utf-8"))
 
     logging.info("reading csv finished, flushing the kafka producer...")
     producer.flush()

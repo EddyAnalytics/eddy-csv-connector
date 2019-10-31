@@ -12,7 +12,6 @@ celery = {extras = ["redis"],version = "*"}
 # https://github.com/celery/kombu/issues/1087
 kombu = "==4.6.3"
 confluent-kafka = "*"
-requests = "*"
 
 [requires]
 python_version = "3.7"
