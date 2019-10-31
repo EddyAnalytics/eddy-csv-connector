@@ -50,7 +50,7 @@ def csv_to_kafka(url, topic):
         except BufferError:
             logging.info("BufferError, flushing...")
             producer.flush()
-            producer.produce(topic, line.encode("utf-8"))
+            producer.produce(topic, ",".join(line).encode("utf-8"))
 
     logging.info("reading csv finished, flushing the kafka producer...")
     producer.flush()
