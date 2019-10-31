@@ -46,7 +46,7 @@ def csv_to_kafka(url, topic):
     for line in csv_reader:
         logging.debug("send line to kafka")
         try:
-            producer.produce(topic, line.encode("utf-8"))
+            producer.produce(topic, ",".join(line).encode("utf-8"))
         except BufferError:
             logging.info("BufferError, flushing...")
             producer.flush()
